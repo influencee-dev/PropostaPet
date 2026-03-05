@@ -62,6 +62,31 @@ export default function App() {
           useCORS: true,
           logging: false,
           backgroundColor: '#0A0A0A', // Match dark theme if needed
+          onclone: (clonedDoc) => {
+            // Fix for html2canvas not supporting oklch/oklab colors (Tailwind 4 default)
+            const elements = clonedDoc.getElementsByTagName('*');
+            const tempDiv = clonedDoc.createElement('div');
+            clonedDoc.body.appendChild(tempDiv);
+
+            for (let j = 0; j < elements.length; j++) {
+              const el = elements[j] as HTMLElement;
+              const style = window.getComputedStyle(el);
+              
+              const convertColor = (color: string) => {
+                if (!color || !color.includes('okl')) return color;
+                // Force browser to convert to RGB by assigning to a temp element
+                tempDiv.style.color = color;
+                return window.getComputedStyle(tempDiv).color;
+              };
+
+              if (style.color.includes('okl')) el.style.color = convertColor(style.color);
+              if (style.backgroundColor.includes('okl')) el.style.backgroundColor = convertColor(style.backgroundColor);
+              if (style.borderColor.includes('okl')) el.style.borderColor = convertColor(style.borderColor);
+              if (style.fill.includes('okl')) el.style.fill = convertColor(style.fill);
+              if (style.stroke.includes('okl')) el.style.stroke = convertColor(style.stroke);
+            }
+            clonedDoc.body.removeChild(tempDiv);
+          },
           ignoreElements: (element) => {
             // Ignore Instagram iframes as they often fail to capture or block CORS
             return element.tagName === 'IFRAME';
