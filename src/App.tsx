@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   CheckCircle2, 
   Database, 
@@ -13,11 +13,16 @@ import {
   Instagram,
   Heart,
   MessageCircle,
-  Share2
+  Share2,
+  Download,
+  Loader2
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function App() {
+  const [isDownloading, setIsDownloading] = useState(false);
   // Load Instagram embed script
   useEffect(() => {
     const script = document.createElement('script');
@@ -37,6 +42,51 @@ export default function App() {
       }
     };
   }, []);
+
+  const downloadPDF = async () => {
+    setIsDownloading(true);
+    try {
+      const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape A4
+      const slides = document.querySelectorAll('.slide-card');
+      
+      for (let i = 0; i < slides.length; i++) {
+        const slide = slides[i] as HTMLElement;
+        
+        // Temporarily remove animations and transitions for clean capture
+        const originalStyle = slide.style.cssText;
+        slide.style.transform = 'none';
+        slide.style.transition = 'none';
+        
+        const canvas = await html2canvas(slide, {
+          scale: 2, // Higher quality
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#0A0A0A', // Match dark theme if needed
+          ignoreElements: (element) => {
+            // Ignore Instagram iframes as they often fail to capture or block CORS
+            return element.tagName === 'IFRAME';
+          }
+        });
+        
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        
+        // Restore original style
+        slide.style.cssText = originalStyle;
+      }
+      
+      pdf.save('Influencee-Proposta-Strategica-2026.pdf');
+    } catch (error) {
+      console.error('Errore durante la generazione del PDF:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -474,9 +524,29 @@ export default function App() {
               <h2 className="text-6xl font-bold mb-8">Grazie!</h2>
               <p className="text-2xl text-influencee-secondary mb-12 font-light">Siamo pronti a costruire insieme una campagna di successo.</p>
               
-              <div className="flex flex-col items-center gap-4">
-                <p className="text-influencee-light/40 text-sm">Rimaniamo a disposizione per domande e approfondimenti.</p>
-                <p className="font-bold text-influencee-secondary">www.influencee.it</p>
+              <div className="flex flex-col items-center gap-8">
+                <div className="flex flex-col items-center gap-4">
+                  <p className="text-influencee-light/40 text-sm">Rimaniamo a disposizione per domande e approfondimenti.</p>
+                  <p className="font-bold text-influencee-secondary">www.influencee.it</p>
+                </div>
+
+                <button
+                  onClick={downloadPDF}
+                  disabled={isDownloading}
+                  className="group relative flex items-center gap-3 px-8 py-4 bg-influencee-primary hover:bg-influencee-primary/90 text-white rounded-full font-bold transition-all shadow-lg shadow-influencee-primary/20 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                >
+                  {isDownloading ? (
+                    <>
+                      <Loader2 className="animate-spin" size={20} />
+                      Generazione PDF in corso...
+                    </>
+                  ) : (
+                    <>
+                      <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
+                      Scarica Presentazione PDF
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </motion.section>
