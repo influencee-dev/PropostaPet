@@ -55,6 +55,15 @@ export default function App() {
             {...fadeIn}
             className="slide-card slide-dark justify-center items-center text-center p-12 relative overflow-hidden"
           >
+            <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+              <img 
+                src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1920&q=80" 
+                alt="Hero Dog" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-influencee-dark/80"></div>
+            </div>
             <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
               <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-influencee-primary rounded-full blur-[120px]"></div>
               <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-influencee-secondary rounded-full blur-[120px]"></div>
@@ -110,12 +119,17 @@ export default function App() {
                   ))}
                 </div>
               </div>
-              <div className="bg-influencee-primary/5 rounded-2xl p-8 flex flex-col justify-center items-center text-center">
-                <div className="w-24 h-24 bg-influencee-primary/20 rounded-full flex items-center justify-center mb-6">
-                  <Users size={48} className="text-influencee-primary" />
+              <div className="relative group overflow-hidden rounded-2xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=800&q=80" 
+                  alt="Small Dog Selection" 
+                  className="w-full h-full object-cover aspect-square group-hover:scale-110 transition-transform duration-700"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-influencee-dark/80 to-transparent flex flex-col justify-end p-8 text-center">
+                  <h3 className="text-2xl font-bold mb-2 text-white">Qualità over Quantità</h3>
+                  <p className="text-white/80 text-sm">Il 92% dei consumatori si fida più dei micro-influencer che delle celebrità tradizionali.</p>
                 </div>
-                <h3 className="text-2xl font-bold mb-2">Qualità over Quantità</h3>
-                <p className="text-influencee-dark/60">Il 92% dei consumatori si fida più dei micro-influencer che delle celebrità tradizionali.</p>
               </div>
             </div>
           </motion.section>
@@ -356,18 +370,28 @@ export default function App() {
             
             <div className="grid md:grid-cols-2 gap-6">
               {[
-                { title: "Pet Lovers & Lifestyle", desc: "Proprietari appassionati che condividono la quotidianità con i propri pet in modo estetico e coinvolgente.", tags: ["Lifestyle", "Daily Routine"] },
-                { title: "Educatori Cinofili", desc: "Professionisti del settore con altissima autorevolezza e una community che pende dalle loro labbra.", tags: ["Training", "Expertise"] },
-                { title: "Veterinari & Nutrizionisti", desc: "Credibilità scientifica per prodotti che richiedono una validazione tecnica e medica.", tags: ["Health", "Science"] },
-                { title: "Niche Communities", desc: "Focus su specifiche razze (Toy, Mini, Giant) o stili di vita (Outdoor, Urban Pet).", tags: ["Niche", "Specific"] }
+                { title: "Pet Lovers & Lifestyle", desc: "Proprietari appassionati che condividono la quotidianità con i propri pet in modo estetico e coinvolgente.", tags: ["Lifestyle", "Daily Routine"], img: "https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?auto=format&fit=crop&w=400&q=80" },
+                { title: "Educatori Cinofili", desc: "Professionisti del settore con altissima autorevolezza e una community che pende dalle loro labbra.", tags: ["Training", "Expertise"], img: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=400&q=80" },
+                { title: "Veterinari & Nutrizionisti", desc: "Credibilità scientifica per prodotti che richiedono una validazione tecnica e medica.", tags: ["Health", "Science"], img: "https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=400&q=80" },
+                { title: "Niche Communities", desc: "Focus su specifiche razze (Toy, Mini, Giant) o stili di vita (Outdoor, Urban Pet).", tags: ["Niche", "Specific"], img: "https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=400&q=80" }
               ].map((item, i) => (
-                <div key={i} className="p-6 rounded-2xl bg-influencee-primary/5 border border-influencee-primary/10">
-                  <h4 className="text-xl font-bold text-influencee-dark mb-2">{item.title}</h4>
-                  <p className="text-sm text-influencee-dark/60 mb-4">{item.desc}</p>
-                  <div className="flex gap-2">
-                    {item.tags.map((tag, j) => (
-                      <span key={j} className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-influencee-primary/10 text-influencee-primary rounded-md">{tag}</span>
-                    ))}
+                <div key={i} className="group overflow-hidden rounded-2xl bg-influencee-primary/5 border border-influencee-primary/10 flex flex-col">
+                  <div className="h-32 overflow-hidden">
+                    <img 
+                      src={item.img} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h4 className="text-xl font-bold text-influencee-dark mb-2">{item.title}</h4>
+                    <p className="text-sm text-influencee-dark/60 mb-4">{item.desc}</p>
+                    <div className="flex gap-2">
+                      {item.tags.map((tag, j) => (
+                        <span key={j} className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 bg-influencee-primary/10 text-influencee-primary rounded-md">{tag}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -433,6 +457,15 @@ export default function App() {
             {...fadeIn}
             className="slide-card slide-dark justify-center items-center text-center p-12 relative overflow-hidden"
           >
+            <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+              <img 
+                src="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&w=1920&q=80" 
+                alt="Happy Dog Thanks" 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-influencee-dark/80"></div>
+            </div>
             <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-influencee-primary rounded-full blur-[150px]"></div>
             </div>
